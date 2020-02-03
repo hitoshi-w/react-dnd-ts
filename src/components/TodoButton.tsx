@@ -5,10 +5,11 @@ import Button from '@material-ui/core/Button';
 import Textarea from 'react-textarea-autosize';
 
 interface TodoButtonProps {
-  title: boolean;
+  id: number;
+  createCard: (id: number, text: string) => void
 }
 
-const TodoButton: React.FC<TodoButtonProps> = ({title}) => {
+const TodoButton: React.FC<TodoButtonProps> = ({createCard, id}) => {
   const [form, setForm] = useState(false);
   const [text, setText] = useState("");
 
@@ -21,10 +22,12 @@ const TodoButton: React.FC<TodoButtonProps> = ({title}) => {
   const handleChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value)
   }
+  const handleAddCard = () => {
+    if(text) {
+      createCard(id, text)
+    }
+  }
   const renderForm = () => {
-    const placeholder = title ? "Enter list title..." : "Enter a title for this card";
-    const buttonTitle = title ? "Add List" : "Add Card";
-
     return (
       <div>
         <Card style={{
@@ -34,7 +37,7 @@ const TodoButton: React.FC<TodoButtonProps> = ({title}) => {
         }}
         >
           <Textarea
-            placeholder={placeholder}
+            placeholder="Add card"
             autoFocus
             onBlur={closeForm}
             value={text}
@@ -50,10 +53,11 @@ const TodoButton: React.FC<TodoButtonProps> = ({title}) => {
         </Card>
         <div style={styles.formButtonGroup}>
           <Button
+            onMouseDown={handleAddCard}
             variant="contained"
             style={{color: "white", backgroundColor: "#5aac44"}}
           >
-            {buttonTitle}{""}
+            Add Card
           </Button>
           <Icon
             style={{
@@ -67,23 +71,18 @@ const TodoButton: React.FC<TodoButtonProps> = ({title}) => {
   }
 
   const renderAddButton = () => {
-    const buttonText = title ? "Add another list" : "Add another card";
-    const buttonTextOpacity = title ? 1 : 0.5;
-    const buttonTextColor = title ? "white" : "inherit";
-    const buttonTextBackground = title ? "rgba(0,0,0,.15)" : "inherit";
-
     return (
       <div
         onClick={openForm}
         style={{
           ...styles.openFormButtonGroup,
-          opacity: buttonTextOpacity,
-          color: buttonTextColor,
-          backgroundColor: buttonTextBackground
+          opacity: 1,
+          color: "white",
+          backgroundColor: "rgba(0,0,0,.15)"
         }}
       >
         <Icon>add</Icon>
-        <p>{buttonText}</p>
+        <p>Add another card</p>
       </div>
     )
   }

@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import { RootState } from 'reducers/rootReducer';
 
+let cardID = 3;
 export interface CardElement {
   id: number;
   text: string;
@@ -43,15 +44,40 @@ export const initTodo: TodoElement[] = [
   }
 ]
 //actions
-export const CREATE_TODO = 'CREATE_TODO' as const;
+export const CREATE_CARD = 'CREATE_CARD' as const;
 
-// interface CreateTodoAction {
-//   type: typeof CREATE_TODO;
-//   payload: ProjectElement;
-// }
 
-const todoReducer = (state = initTodo, action: any) =>{
+interface CreateCardAction {
+  type: typeof CREATE_CARD;
+  payload: {listID: number; text: string;};
+}
+
+export type TodoActionTypes =  CreateCardAction
+
+export const createCard = (listID: number, text: string) => ({
+  type: CREATE_CARD,
+  payload: {listID, text}
+})
+
+const todoReducer = (state = initTodo, action: TodoActionTypes): TodoElement[] =>{
   switch(action.type) {
+    case CREATE_CARD:
+      const newCard = {
+        id: cardID,
+        text: action.payload.text,
+      };
+      cardID += 1;
+      const newState = state.map(ele => {
+        if(ele.id === action.payload.listID) {
+          return {
+            ...ele,
+            cards: [...ele.cards, newCard]
+          }
+        }else{
+          return ele;
+        }
+      })
+      return newState;
     default:
       return state;
   }

@@ -1,14 +1,14 @@
 import React from 'react';
 import TodoCard from './TodoCard';
 import { TodoElement } from 'reducers/todoReducer';
-import TodoButton from 'components/TodoButton';
+import TodoButton from 'containers/TodoButton';
 
-const TodoList: React.FC<TodoElement> = ({ title, cards }) => {
+const TodoList: React.FC<TodoElement> = ({ title, cards, id }) => {
   return (
   <div style={styles.container}>
     <h4>{title}</h4>
     {cards.map(card => (<TodoCard key={card.id} {...card}/>))}
-    <TodoButton title={false}/>
+    <TodoButton id={id} />
   </div>);
 }
 

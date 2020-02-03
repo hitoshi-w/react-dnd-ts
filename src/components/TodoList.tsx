@@ -1,24 +1,22 @@
 import React from 'react';
-import Card from './Card';
+import TodoCard from './TodoCard';
+import { TodoElement } from 'reducers/todoReducer';
 
-export interface TodoListProps {
-
-}
-
-const TodoList: React.FC<TodoListProps> = () => {
+const TodoList: React.FC<TodoElement> = ({ title, cards }) => {
   return (
   <div style={styles.container}>
-    <h3>List</h3>
-    <Card />
+    <h4>{title}</h4>
+    {cards.map(card => (<TodoCard {...card}/>))}
   </div>);
 }
 
 const styles = {
   container: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#dfe3e6',
     borderRadius: 3,
     width: 300,
     padding: 8,
+    marginRight: 8,
   }
 }
 

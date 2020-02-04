@@ -1,28 +1,41 @@
 import React from 'react';
 import TodoList from 'components/TodoList';
-import { TodoState } from 'reducers/todoReducer';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { TodoState, DragIds } from 'reducers/todoReducer';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import styled from 'styled-components';
 
-const App: React.FC<TodoState> = ({ todo }) => {
-  const onDragEnd = () => {
+const ListsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
+interface OwnProps {
+  dragCard: (dragIds: DragIds) => void
+}
+
+type Props = OwnProps & TodoState
+const App: React.FC<Props> = ({ todo, dragCard }) => {
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+    if(!destination) {
+      return;
+    }
+    const dragIds = {
+      droppableIdStart: source.droppableId,
+      droppableIdEnd: destination.droppableId,
+      droppableIndexStart: source.index,
+      droppableIndexEnd: destination.index,
+      draggableId: draggableId
+    }
+    dragCard({...dragIds})
   }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div>
-        <div style={styles.listsContainer}>
-          {todo.map(ele => <TodoList key={ele.id} {...ele}/>)}
-        </div>
-      </div>
+      <ListsContainer>
+        {todo.map(ele => <TodoList key={ele.id} {...ele}/>)}
+      </ListsContainer>
     </DragDropContext>
   );
-}
-
-const styles = {
-  listsContainer: {
-    display: "flex",
-    flexDirection: "row",
-  } as React.CSSProperties
 }
 
 export default App;

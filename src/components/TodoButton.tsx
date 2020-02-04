@@ -5,8 +5,8 @@ import Button from '@material-ui/core/Button';
 import Textarea from 'react-textarea-autosize';
 
 interface TodoButtonProps {
-  id: number;
-  createCard: (id: number, text: string) => void
+  id: string;
+  createCard: (id: string, text: string) => void
 }
 
 const TodoButton: React.FC<TodoButtonProps> = ({createCard, id}) => {
@@ -100,7 +100,7 @@ const styles = {
     borderRadius: 3,
     width: 272,
     height: 36,
-    paddingLeft: 3
+    paddingLeft: 10
   },
   formButtonGroup: {
     marginTop: 8,

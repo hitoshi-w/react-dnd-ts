@@ -3,12 +3,24 @@ import TodoCard from './TodoCard';
 import { TodoElement } from 'reducers/todoReducer';
 import TodoButton from 'containers/TodoButton';
 import { Droppable } from "react-beautiful-dnd";
+import styled from 'styled-components';
+
+const ListContainer = styled.div`
+  background-color: #dfe3e6;
+  border-radius: 3px;
+  width: 300px;
+  height: 100%;
+  padding: 8px;
+  margin-right: 8px;
+`;
 
 const TodoList: React.FC<TodoElement> = ({ title, cards, id }) => {
   return (
-    <Droppable droppableId={String(id)}>
+    <Droppable droppableId={id}>
       {provided => (
-        <div {...provided.droppableProps} ref={provided.innerRef} style={styles.container}>
+        <ListContainer
+          {...provided.droppableProps}
+          ref={provided.innerRef}>
           <h4>{title}</h4>
           {cards.map((card, index) => (
             <TodoCard
@@ -19,21 +31,10 @@ const TodoList: React.FC<TodoElement> = ({ title, cards, id }) => {
             />
           ))}
           <TodoButton id={id} />
-        </div>
+        </ListContainer>
       )}
     </Droppable>
   );
-}
-
-const styles = {
-  container: {
-    backgroundColor: '#dfe3e6',
-    borderRadius: 3,
-    width: 300,
-    height: "100%",
-    padding: 8,
-    marginRight: 8,
-  }
 }
 
 export default TodoList;

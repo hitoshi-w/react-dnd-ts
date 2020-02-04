@@ -111,13 +111,23 @@ const todoReducer = (state = initTodo, action: TodoActionTypes): TodoElement[] =
         droppableIndexStart,
         draggableId
       } = action.payload;
-      //same list
+
       if(droppableIdStart === droppableIdEnd) {
+        //same list
         const list = state.find(list => droppableIdStart === list.id)
         assertIsDefined(list)
-
         const card = list.cards.splice(droppableIndexStart, 1);
+        console.log(list.cards)
         list.cards.splice(droppableIndexEnd, 0, ...card)
+        console.log(list.cards)
+      } else {
+        //other list
+        const listStart = state.find(list => droppableIdStart === list.id)
+        assertIsDefined(listStart)
+        const card = listStart.cards.splice(droppableIndexStart, 1);
+        const listEnd = state.find(list => droppableIdEnd === list.id);
+        assertIsDefined(listEnd)
+        listEnd.cards.splice(droppableIndexEnd, 0, ...card);
       }
       return [...state];
     default:

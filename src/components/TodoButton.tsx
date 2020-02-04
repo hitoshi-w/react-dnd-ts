@@ -31,7 +31,7 @@ const TodoButton: React.FC<TodoButtonProps> = ({createCard, id}) => {
     return (
       <div>
         <Card style={{
-          minHeight: 85,
+          minHeight: 80,
           minWidth: 272,
           padding: "6px 8px 2px"
         }}

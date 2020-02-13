@@ -1,15 +1,23 @@
 import { Dispatch } from 'redux';
 import { RootState } from 'reducers/rootReducer';
 
-let cardID = 3;
+function assertIsDefined<T>(val: T): asserts val is NonNullable<T> {
+  if (val === undefined || val === null) {
+    throw new Error(
+      `Expected 'val' to be defined, but received ${val}`
+    );
+  }
+}
+
+let cardID = 4;
 export interface CardElement {
-  id: number;
+  id: string;
   text: string;
 }
 
 export interface TodoElement {
   title: string;
-  id: number;
+  id: string;
   cards: CardElement[];
 }
 
@@ -20,50 +28,67 @@ export interface TodoState {
 export const initTodo: TodoElement[] = [
   {
     title: 'Last',
-    id: 0,
+    id: `list-${0}`,
     cards: [
-      { id: 0,
+      { id: `card-${0}`,
         text: 'hello world'
       },
-      { id: 1,
+      { id: `card-${1}`,
         text: 'hello world2'
       },
     ]
   },
   {
     title: 'First',
-    id: 1,
+    id: `list-${1}`,
     cards: [
-      { id: 0,
+      { id: `card-${2}`,
         text: 'hello world'
       },
-      { id: 1,
+      { id: `card-${3}`,
         text: 'hello world2'
       },
     ]
   }
 ]
+export interface DragIds {
+  droppableIdStart: string;
+  droppableIdEnd: string;
+  droppableIndexStart: number;
+  droppableIndexEnd: number;
+  draggableId: string
+}
 //actions
 export const CREATE_CARD = 'CREATE_CARD' as const;
-
+export const DRAG_CARD = 'DRAG_CARD' as const;
 
 interface CreateCardAction {
   type: typeof CREATE_CARD;
-  payload: {listID: number; text: string;};
+  payload: {listID: string; text: string;};
 }
 
-export type TodoActionTypes =  CreateCardAction
+interface DragCardAction {
+  type: typeof DRAG_CARD;
+  payload: DragIds;
+}
 
-export const createCard = (listID: number, text: string) => ({
+export type TodoActionTypes =  CreateCardAction | DragCardAction
+
+export const createCard = (listID: string, text: string) => ({
   type: CREATE_CARD,
   payload: {listID, text}
+})
+
+export const dragCard = (dragIds: DragIds) => ({
+  type: DRAG_CARD,
+  payload: dragIds
 })
 
 const todoReducer = (state = initTodo, action: TodoActionTypes): TodoElement[] =>{
   switch(action.type) {
     case CREATE_CARD:
       const newCard = {
-        id: cardID,
+        id: `card-${cardID}`,
         text: action.payload.text,
       };
       cardID += 1;
@@ -78,6 +103,33 @@ const todoReducer = (state = initTodo, action: TodoActionTypes): TodoElement[] =
         }
       })
       return newState;
+    case DRAG_CARD:
+      const {
+        droppableIdStart,
+        droppableIdEnd,
+        droppableIndexEnd,
+        droppableIndexStart,
+        draggableId
+      } = action.payload;
+
+      if(droppableIdStart === droppableIdEnd) {
+        //same list
+        const list = state.find(list => droppableIdStart === list.id)
+        assertIsDefined(list)
+        const card = list.cards.splice(droppableIndexStart, 1);
+        console.log(list.cards)
+        list.cards.splice(droppableIndexEnd, 0, ...card)
+        console.log(list.cards)
+      } else {
+        //other list
+        const listStart = state.find(list => droppableIdStart === list.id)
+        assertIsDefined(listStart)
+        const card = listStart.cards.splice(droppableIndexStart, 1);
+        const listEnd = state.find(list => droppableIdEnd === list.id);
+        assertIsDefined(listEnd)
+        listEnd.cards.splice(droppableIndexEnd, 0, ...card);
+      }
+      return [...state];
     default:
       return state;
   }

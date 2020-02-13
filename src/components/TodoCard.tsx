@@ -4,6 +4,11 @@ import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import { CardElement } from 'reducers/todoReducer';
 import { Draggable } from 'react-beautiful-dnd';
+import styled from 'styled-components';
+
+const CardContainer = styled.div`
+  margin-bottom: 8px;
+`;
 
 interface OwnProps {
   index: number;
@@ -12,27 +17,21 @@ type Props = OwnProps & CardElement;
 
 const TodoCard: React.FC<Props> = ({ text, id, index }) => {
   return (
-    <Draggable draggableId={String(id)} index={index}>
+    <Draggable draggableId={id} index={index}>
       {provided => (
-        <div
+        <CardContainer
         ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <Card style={styles.cardContainer}>
+          <Card>
             <CardContent>
               <Typography gutterBottom>
                 {text}
               </Typography>
             </CardContent>
           </Card>
-        </div>
+        </CardContainer>
       )}
     </Draggable>
   );
 };
-
-const styles = {
-  cardContainer: {
-    marginBottom: 8,
-  }
-}
 
 export default TodoCard;

@@ -11,7 +11,7 @@ import {Dispatch} from 'redux';
 const mapDispatchToProps = (
   dispatch: Dispatch
 ) => ({
-  createCard: (listID: number, text: string) => dispatch(createCard(listID, text)),
+  createCard: (listID: string, text: string) => dispatch(createCard(listID, text)),
 });
 
 export default connect(null, mapDispatchToProps)(TodoButton);

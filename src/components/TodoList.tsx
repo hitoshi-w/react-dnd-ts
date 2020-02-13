@@ -16,6 +16,7 @@ const ListContainer = styled.div`
 
 const TodoList: React.FC<TodoElement> = ({ title, cards, id }) => {
   return (
+
     <Droppable droppableId={id}>
       {provided => (
         <ListContainer
